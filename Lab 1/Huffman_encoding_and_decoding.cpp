@@ -43,7 +43,6 @@ public:
             pq.push(newNode);
         }
 
-
         return pq.top();
     }
 
