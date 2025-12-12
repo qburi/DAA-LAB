@@ -1,2 +1,9 @@
-//
-// Created by divye on 12/12/2025.
+#include <bits/stdc++.h>
+
+
+using namespace std;
+
+
+int main() {
+    return 0;
+}
