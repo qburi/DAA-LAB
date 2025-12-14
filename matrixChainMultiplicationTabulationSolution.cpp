@@ -22,7 +22,7 @@ public:
 };
 
 int main() {
-    vector<int> arr{10, 30, 5, 10};
+    vector<int> arr{10, 30, 5, 60};
     Solution* solution = new Solution();
     cout << "Minimum number of multiplications: ";
     cout << solution->matrixChainMultiplication(arr) << endl;
