@@ -16,7 +16,7 @@ public:
         return minimumSteps;
     }
 
-    int matrixChainMultiplication(vector<int> &arr) {
+    int matrixChainMultiplication(vector<int>& arr) {
         int n = arr.size();
         vector<vector<int>> dp(n, vector<int>(n, -1));
         return solve(1, n - 1, arr, dp);
