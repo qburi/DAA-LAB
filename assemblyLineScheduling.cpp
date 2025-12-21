@@ -31,20 +31,21 @@ int assemblyLineScheduling(vector<vector<int>>& a, vector<vector<int>>& t, int e
 
 
 int main() {
-    // Example from your slides (Page 18)
     vector<vector<int>> a = {
         {2, 8, 9, 3, 6, 1},
         {4, 3, 2, 1, 7, 3}
-    }; // Station times
+    };
 
+    // FIX: Updated Row 0 to match Slide Page 18 (2, 3, 1, 3, 4)
     vector<vector<int>> t = {
-        {0, 3, 2, 4, 3, 4},
-        {0, 2, 1, 2, 2, 1}
-    }; // Transfer times (dummy 0 at start)
+        {2, 3, 1, 3, 4}, // Transfer FROM Line 1 TO Line 2
+        {2, 1, 2, 2, 1}  // Transfer FROM Line 2 TO Line 1
+    };
 
-    vector<int> e = {4, 2}; // Entry times
-    vector<int> x = {3, 7}; // Exit times
+    vector<int> e = {4, 2};
+    vector<int> x = {3, 7};
 
+    // FIX: Corrected indices for exit array (x[0], x[1])
     cout << "Minimum time: "
             << assemblyLineScheduling(a, t, e[0], e[1], x[0], x[1]) << endl;
 
