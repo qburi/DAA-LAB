@@ -43,7 +43,7 @@ int main() {
     };
 
     vector<int> e = {4, 2};
-    vector<int> x = {3, 7};
+    vector<int> x = {1, 2};
 
     // FIX: Corrected indices for exit array (x[0], x[1])
     cout << "Minimum time: "
