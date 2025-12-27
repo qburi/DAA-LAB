@@ -89,3 +89,19 @@ public:
         return ans;
     }
 };
+
+
+
+int main() {
+    Solution* solution = new Solution();
+    vector<vector<string>> sol = solution->solveNQueens(4);
+    for (auto& list: sol ) {
+        for (auto& s: list) {
+            cout << s << endl;
+        }
+        cout << endl;
+        cout << endl;
+    }
+    delete solution;
+    return 0;
+}
