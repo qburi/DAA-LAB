@@ -52,6 +52,7 @@ public:
 int main() {
     Solution* solution = new Solution();
     int N;
+    cout << "Enter the value for N: ";
     cin >> N;
     vector<vector<string>> sol = solution->solveNQueens(N);
 
