@@ -51,7 +51,8 @@ public:
 
 int main() {
     Solution* solution = new Solution();
-    int N = 4;
+    int N;
+    cin >> N;
     vector<vector<string>> sol = solution->solveNQueens(N);
 
     cout << "Found " << sol.size() << " solutions for N=" << N << ":\n\n";
