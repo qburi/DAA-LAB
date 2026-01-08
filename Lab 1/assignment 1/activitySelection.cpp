@@ -5,15 +5,43 @@ using namespace std;
 
 class Solution {
 public:
+    void mergeSort(vector<pair<int, int>>& intervals) {
+        if (intervals.size() <= 1)
+            return;
+
+        int mid = intervals.size() / 2;
+        vector<pair<int, int>> leftArray(intervals.begin(), intervals.begin() + mid);
+        vector<pair<int, int>> rightArray(intervals.begin() + mid, intervals.end());
+        mergeSort(leftArray);
+        mergeSort(rightArray);
+        merge(leftArray, rightArray, intervals);
+    }
+
+    void merge(vector<pair<int, int>>& leftArray, vector<pair<int, int>>& rightArray, vector<pair<int, int>>& arr) {
+        int r = 0;
+        int l = 0;
+        int i = 0;
+
+        while (l < leftArray.size() && r < rightArray.size()) {
+            arr[i++] = leftArray[l].second < rightArray[r].second ? leftArray[l++] : rightArray[r++];
+        }
+
+        while (l < leftArray.size()) {
+            arr[i++] = leftArray[l++];
+        }
+
+        while (r < rightArray.size()) {
+            arr[i++] = rightArray[r++];
+        }
+
+    }
 
     vector<pair<int, int>> getMaximumNonOverlappingIntervals(vector<pair<int, int>>& intervals) {
         if (intervals.empty())
             return {};
 
         // approach will be to sort them based on end times
-        sort(intervals.begin(), intervals.end(), [&](pair<int, int>& left, pair<int, int>& right) {
-           return left.second < right.second;
-        });
+        mergeSort(intervals);
 
         vector<pair<int, int>> ans;
         int prevEnd = intervals[0].second;
