@@ -37,3 +37,6 @@ CTestTestfile.cmake
 # --- OS Junk ---
 .DS_Store
 Thumbs.db
+
+# ignore helloworld.cppp
+helloworld.cpp
