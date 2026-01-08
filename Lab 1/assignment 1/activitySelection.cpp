@@ -23,7 +23,7 @@ public:
         int i = 0;
 
         while (l < leftArray.size() && r < rightArray.size()) {
-            arr[i++] = leftArray[l].second < rightArray[r].second ? leftArray[l++] : rightArray[r++];
+            arr[i++] = leftArray[l].second <= rightArray[r].second ? leftArray[l++] : rightArray[r++];
         }
 
         while (l < leftArray.size()) {
