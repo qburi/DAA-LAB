@@ -39,5 +39,6 @@ int main() {
     long long y;
     cout << "Enter two numbers: " << endl;
     cin >> x >> y;
+    cout << solution.multiply(x, y) << endl;
     return 0;
 }
