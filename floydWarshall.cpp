@@ -84,12 +84,34 @@ int main() {
     Solution solution;
     const int INF = INT_MAX;
     vector<vector<int>> graph = {
+        {0, 3, 8, INT_MAX, -4},
+        {INT_MAX, 0, INT_MAX, 1, 7},
+        {INT_MAX, 4, 0, INT_MAX, INT_MAX},
+        {2, INT_MAX, -5, 0, INT_MAX},
+        {INT_MAX, INT_MAX, INT_MAX, 6, 0}
+    };
+    solution.floydWarshall(graph);
+    return 0;
+}
+
+/*
+
+test case 1:
+vector<vector<int>> graph = {
         {0,   4,   5,   INF, INF},
         {INF, 0,   INF, -2,  INF},
         {INF, INF, 0,   INF, 5},
         {INF, INF, -1,  0,   6},
         {8,   INF, INF, INF, 0}
     };
-    solution.floydWarshall(graph);
-    return 0;
-}
+
+test case 2
+vector<vector<int>> graph = {
+    {0, 3, 8, INT_MAX, -4},
+    {INT_MAX, 0, INT_MAX, 1, 7},
+    {INT_MAX, 4, 0, INT_MAX, INT_MAX},
+    {2, INT_MAX, -5, 0, INT_MAX},
+    {INT_MAX, INT_MAX, INT_MAX, 6, 0}
+};
+
+ */
