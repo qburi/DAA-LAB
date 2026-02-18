@@ -1,83 +1,85 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <iomanip>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-// Using a safe INF to avoid overflow during addition
-const int INF = 1e7;
-const int V = 5;
+class Solution {
+public:
+    vector<vector<int>> dist;
+    vector<vector<int>> pred;
+    int n;
 
-void printPath(int i, int j, const vector<vector<int>>& pred) {
-    if (i == j) {
-        cout << i;
-        return;
-    }
-    if (pred[i][j] == -1) {
-        cout << "No path";
-        return;
-    }
-    printPath(i, pred[i][j], pred);
-    cout << " -> " << j;
-}
+    void floydWarshall(vector<vector<int>>& graph) {
+        this->n = graph.size();
+        this->dist = graph;
+        this->pred = vector<vector<int>>(n, vector<int>(n, -1));
 
-void floydWarshall(vector<vector<int>>& graph) {
-    vector<vector<int>> dist = graph;
-    vector<vector<int>> pred(V, vector<int>(V, -1));
-
-    // --- Step 1: Initialization ---
-    for (int i = 0; i < V; i++) {
-        for (int j = 0; j < V; j++) {
-            if (graph[i][j] != INF && i != j) {
-                pred[i][j] = i;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (dist[i][j] != INT_MAX && i != j)
+                    pred[i][j] = i;
+                // or else it rolls back to the default -1 which was already initialized
             }
         }
-    }
 
-    // --- Step 2: The Three Loops ---
-    for (int k = 0; k < V; k++) {
-        for (int i = 0; i < V; i++) {
-            for (int j = 0; j < V; j++) {
-                if (dist[i][k] != INF && dist[k][j] != INF) {
+        for (int k = 0; k < n; k++) {
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (dist[i][k] == INT_MAX || dist[k][j] == INT_MAX)
+                        continue;
+
                     if (dist[i][k] + dist[k][j] < dist[i][j]) {
                         dist[i][j] = dist[i][k] + dist[k][j];
-                        pred[i][j] = pred[k][j]; // Update predecessor
+                        pred[i][j] = pred[k][j];
                     }
+
                 }
+            }
+        }
+
+        // check for negative cycles
+        for (int i = 0; i < n; i++) {
+            if (dist[i][i] < 0) {
+                cout << "Negative cycles found." << endl;
+                return;
+            }
+        }
+
+        printDistanceMatrix();
+        cout << endl;
+        cout << endl;
+        printPredecessorMatrix();
+    }
+
+    void printDistanceMatrix() {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                cout << "Shortest path from node " << i << " to node " << j << " is " << (dist[i][j] == INT_MAX ? "INFINITY" : to_string(dist[i][j])) << endl;
             }
         }
     }
 
-    // --- Step 3: Output and Path Reconstruction ---
-    cout << "Pairwise Shortest Paths and Routes:\n";
-    cout << "------------------------------------\n";
-    for (int i = 0; i < V; i++) {
-        for (int j = 0; j < V; j++) {
-            if (i != j) {
-                cout << i << " to " << j << " | Cost: ";
-                if (dist[i][j] == INF) {
-                    cout << "INF | Path: None" << endl;
-                } else {
-                    cout << setw(2) << dist[i][j] << " | Path: [";
-                    printPath(i, j, pred);
-                    cout << "]" << endl;
-                }
+    void printPredecessorMatrix() {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (dist[i][j] != INT_MAX)
+                     printPath(i, j);
             }
         }
     }
 
-    // Negative Cycle Check
-    for (int i = 0; i < V; i++) {
-        if (dist[i][i] < 0) {
-            cout << "\nWARNING: GRAPH CONTAINS A NEGATIVE WEIGHT CYCLE!" << endl;
+    void printPath(int u, int v) {
+        if (u == v) {
+            cout << u;
             return;
         }
+        printPath(u, pred[u][v]);
+        cout << " -> " << v;
     }
-}
+};
 
 int main() {
-    // Example Graph (A=0, B=1, C=2, D=3, E=4)
+    Solution solution;
+    const int INF = INT_MAX;
     vector<vector<int>> graph = {
         {0,   4,   5,   INF, INF},
         {INF, 0,   INF, -2,  INF},
@@ -85,8 +87,6 @@ int main() {
         {INF, INF, -1,  0,   6},
         {8,   INF, INF, INF, 0}
     };
-
-    floydWarshall(graph);
-
+    solution.floydWarshall(graph);
     return 0;
 }
