@@ -61,8 +61,11 @@ public:
     void printPredecessorMatrix() {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                if (dist[i][j] != INT_MAX)
-                     printPath(i, j);
+                if (i != j && dist[i][j] != INT_MAX) {
+                    cout << "Shortest path from " << i << " to " << j << ": ";
+                    printPath(i, j);
+                    cout << endl;
+                }
             }
         }
     }
