@@ -6,97 +6,102 @@ struct Edge {
     int to;
     int capacity;
     int flow;
-    Edge* residual; // Pointer to the residual edge
+    Edge* residualEdge;
 
     Edge(int to, int capacity) {
+        flow = 0;
         this->to = to;
         this->capacity = capacity;
-        this->flow = 0;
-        this->residual = nullptr;
+        residualEdge = nullptr;
     }
 
     int remainingCapacity() {
         return capacity - flow;
     }
 
-    void augment(int bottleneck) {
-        flow += bottleneck;
-        residual->flow -= bottleneck;
+    void augment(int bottleNeck) {
+        flow += bottleNeck;
+        residualEdge->flow -= bottleNeck;
+    }
+
+    static void addEdge(vector<vector<Edge*>>& adj, int from, int to, int capacity) {
+        // from -> to : forward edge
+        // to -> from : backward edge
+        Edge* forward = new Edge(to, capacity);
+        Edge* backward = new Edge(from, 0);
+
+        forward->residualEdge = backward;
+        backward->residualEdge = forward;
+
+        adj[from].push_back(forward);
+        adj[to].push_back(backward);
     }
 };
 
-void addEdge(vector<vector<Edge*>>& adj, int from, int to, int capacity) {
-    Edge* e1 = new Edge(to, capacity);
-    Edge* e2 = new Edge(from, 0); // Residual edge starts with 0 capacity
+class Solution {
+public:
+    int dfs(int from, int sink, int currentFlow, vector<bool>& visited, vector<vector<Edge*>>& adj) {
+        if (from == sink)
+            return currentFlow;
 
-    // Cross-link the pointers
-    e1->residual = e2;
-    e2->residual = e1;
+        visited[from] = true;
 
-    adj[from].push_back(e1);
-    adj[to].push_back(e2);
-}
+        for (Edge* edge: adj[from]) {
 
-// DFS to find augmenting paths
-int dfs(int u, int t, int current_flow, vector<vector<Edge*>>& adj, vector<bool>& visited) {
-    if (u == t)
-        // we have reached the sink
-        return current_flow;
+            if (! visited[edge->to] && edge->remainingCapacity() > 0) {
+                int bottleNeck = dfs(edge->to, sink, min(currentFlow, edge->remainingCapacity()), visited, adj);
 
-    visited[u] = true;
-
-    // Notice the pointer syntax (*) and (->)
-    for (Edge* edge : adj[u]) {
-        if (!visited[edge->to] && edge->remainingCapacity() > 0) {
-
-            int bottleneck = dfs(edge->to, t, min(current_flow, edge->remainingCapacity()), adj, visited);
-
-            if (bottleneck > 0) {
-                edge->augment(bottleneck); // Automatically handles the residual!
-                return bottleneck;
+                if (bottleNeck > 0) {
+                    edge->augment(bottleNeck);
+                    return bottleNeck;
+                }
             }
+
         }
+
+        // no path
+        return 0;
     }
-    return 0;
-}
+    int fordFulkerson(int V, int source, int sink, vector<vector<Edge*>>& adj) {
+        int maxFlow = 0;
 
-int fordFulkerson(int V, int source, int sink, vector<vector<Edge*>>& adj) {
-    int max_flow = 0;
+        while (true) {
+            vector<bool> visited(V, false); // needed for augmenting new paths
 
-    while (true) {
-        vector<bool> visited(V, false);
-        int flow = dfs(source, sink, INT_MAX, adj, visited);
+            // we pass int INT_MAX for currentFlow because source has infinite flow and will not act as a bottleneck.
+            int flow = dfs(source, sink, INT_MAX, visited, adj);
 
-        if (flow == 0)
-            // no more augmenting paths
-            break;
+            if (flow == 0)
+                // no more augmenting paths
+                break;
 
-        max_flow += flow;
+            maxFlow += flow;
+        }
+
+        return maxFlow;
     }
+};
 
-    return max_flow;
-}
 
 int main() {
+    // time complexity: O(fE)
+    // Space complexity: O(V + E)
     int V = 6;
     vector<vector<Edge*>> adj(V);
 
-    addEdge(adj, 0, 1, 16);
-    addEdge(adj, 0, 2, 13);
-    addEdge(adj, 1, 2, 10);
-    addEdge(adj, 1, 3, 12);
-    addEdge(adj, 2, 1, 4);
-    addEdge(adj, 2, 4, 14);
-    addEdge(adj, 3, 2, 9);
-    addEdge(adj, 3, 5, 20);
-    addEdge(adj, 4, 3, 7);
-    addEdge(adj, 4, 5, 4);
+    Edge::addEdge(adj, 0, 1, 16);
+    Edge::addEdge(adj, 0, 2, 13);
+    Edge::addEdge(adj, 1, 2, 10);
+    Edge::addEdge(adj, 1, 3, 12);
+    Edge::addEdge(adj, 2, 1, 4);
+    Edge::addEdge(adj, 2, 4, 14);
+    Edge::addEdge(adj, 3, 2, 9);
+    Edge::addEdge(adj, 3, 5, 20);
+    Edge::addEdge(adj, 4, 3, 7);
+    Edge::addEdge(adj, 4, 5, 4);
 
-    cout << "Maximum Flow: " << fordFulkerson(V, 0, 5, adj) << endl;
+    Solution solution;
 
-    // Note: In a production C++ app, we would write a loop here to 'delete'
-    // all the 'new Edge' pointers to prevent memory leaks. For a timed lab exam,
-    // the OS cleans it up when the program exits, so we skip it to save time.
-
+    cout << "Maximum Flow: " << solution.fordFulkerson(V, 0, 5, adj) << endl;
     return 0;
 }
