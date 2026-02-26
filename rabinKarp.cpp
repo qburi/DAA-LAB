@@ -40,14 +40,8 @@ public:
             }
 
             if (i < n - m) {
-                long long removedTerm = (h * s[i]) % q;
-                long long sub = sHash - removedTerm;
-                if (sub < 0) {
-                    sub = (sub + q) % q;
-                }
-                else
-                    sub = sub % q;
-                sHash = (d * sub + s[i + m]) % q;
+                sHash = (d * (sHash - s[i] * h) + s[i + m]) % q;
+                sHash = (sHash + q) % q;
             }
         }
     }
