@@ -32,9 +32,8 @@ public:
         for (int i = 0; i <= n - m; i++) {
             cout << "Index " << i << ": Hash=" << sHash << endl;
             if (sHash == pHash) {
-                if (s.substr(i, m) == p.substr(0, m)) {
+                if (s.substr(i, m) == p.substr(0, m))
                     cout << "Pattern found at index " << i << endl;
-                }
                 else
                     cout << "Spurious Hit" << endl;
             }
