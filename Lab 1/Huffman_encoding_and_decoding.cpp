@@ -74,21 +74,47 @@ public:
     }
 };
 
+// hard-coded test cases
 int main() {
-    string input = "banana";
-    HuffmanAlgorithm huff(input);
+    vector<string> testCases = {
+        "banana",
+        "abracadabra",
+        "huffman coding",
+        "the quick brown fox jumps over the lazy dog"
+    };
 
-    cout << "Input: " << input << endl;
-    cout << "Codes:" << endl;
-    for(auto pair : huff.codes) {
-        cout << pair.first << ": " << pair.second << endl;
+    for (string& input : testCases) {
+        HuffmanAlgorithm huff(input);
+
+        string encoded = "";
+        for (char c : input) encoded += huff.codes[c];
+
+        string decoded = huff.decode(encoded);
+
+        cout << "Input:   " << input << "\n";
+        cout << "Encoded: " << encoded << "\n";
+        cout << "Decoded: " << decoded << "\n";
+        cout << (input == decoded ? "✅ PASS" : "❌ FAIL") << "\n\n";
     }
-
-    string encoded = "";
-    for(char c : input) encoded += huff.codes[c];
-
-    cout << "\nEncoded: " << encoded << endl;
-    cout << "Decoded: " << huff.decode(encoded) << endl;
 
     return 0;
 }
+
+// int main() {
+//     string input = "banana";
+//     HuffmanAlgorithm huff(input);
+//
+//     cout << "Input: " << input << endl;
+//     cout << "Codes:" << endl;
+//     for(auto pair : huff.codes) {
+//         cout << pair.first << ": " << pair.second << endl;
+//     }
+//
+//     string encoded = "";
+//     for(char c : input) encoded += huff.codes[c];
+//
+//     cout << "\nEncoded: " << encoded << endl;
+//     cout << "Decoded: " << huff.decode(encoded) << endl;
+//
+//     return 0;
+// }
