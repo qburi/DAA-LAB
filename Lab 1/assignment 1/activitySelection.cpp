@@ -86,3 +86,47 @@ int main() {
     delete solution;
     return 0;
 }
+
+/*
+some test cases
+// Helper function to run and format test cases cleanly
+void runTestCase(int testNum, const string& description, vector<pair<int, int>> intervals, Solution& sol) {
+cout << "Test Case " << testNum << ": " << description << "\n";
+cout << "Input:    ";
+for (const auto& p : intervals) {
+cout << "{" << p.first << ", " << p.second << "} ";
+}
+cout << "\n";
+
+vector<pair<int, int>> result = sol.getMaximumNonOverlappingIntervals(intervals);
+
+cout << "Selected: ";
+for (const auto& p : result) {
+cout << "{" << p.first << ", " << p.second << "} ";
+}
+cout << "\n-------------------------------------------------\n";
+}
+
+int main() {
+Solution sol;
+
+// Test Case 1: Classic mix of overlapping and non-overlapping activities
+runTestCase(1, "Standard Mix",
+{{1, 4}, {3, 5}, {0, 6}, {5, 7}, {3, 9}, {5, 9}, {6, 10}, {8, 11}, {8, 12}, {2, 14}, {12, 16}}, sol);
+
+// Test Case 2: Sorted by start time, but end times are nested
+// (A naive sort-by-start-time would fail here by picking {1, 10})
+runTestCase(2, "Nested Intervals",
+{{1, 10}, {2, 9}, {3, 8}, {4, 7}, {5, 6}}, sol);
+
+// Test Case 3: All activities are mutually disjoint
+runTestCase(3, "Completely Disjoint",
+{{1, 2}, {3, 4}, {5, 6}, {7, 8}}, sol);
+
+// Test Case 4: All activities overlap, sharing the same start time
+runTestCase(4, "Completely Overlapping",
+{{1, 5}, {1, 2}, {1, 3}, {1, 4}}, sol);
+
+return 0;
+}
+*/
