@@ -34,12 +34,38 @@ public:
     }
 };
 
+
 int main() {
-    Solution solution = Solution();
-    ll x;
-    ll y;
-    cout << "Enter two numbers: " << endl;
-    cin >> x >> y;
-    cout << solution.multiply(x, y) << endl;
+    Solution sol;
+
+    vector<pair<ll, ll>> testCases = {
+        {1234, 5678},       // Standard even digits
+        {123, 45},          // Mismatched and odd digits
+        {12345, 67890},     // Larger numbers
+        {9999, 9999},       // Max digits for 4-length
+        {9, 9}              // Base case trigger
+    };
+
+    for (auto& [x, y] : testCases) {
+        ll expected = x * y;
+        ll result = sol.multiply(x, y);
+
+        cout << "Input:   " << x << " * " << y << "\n";
+        cout << "Result:  " << result << "\n";
+        cout << (result == expected ? "✅ PASS" : "❌ FAIL") << "\n\n";
+    }
+
     return 0;
 }
+
+
+//
+// int main() {
+//     Solution solution = Solution();
+//     ll x;
+//     ll y;
+//     cout << "Enter two numbers: " << endl;
+//     cin >> x >> y;
+//     cout << solution.multiply(x, y) << endl;
+//     return 0;
+// }
