@@ -131,9 +131,9 @@ int main() {
 
 /*
     this code gives infinite loops bug for the negative cycle test case (3)
-    3 3
-    0
-    0 1 1
-    1 2 -5
-    2 0 2
+3 3
+0
+0 1 1
+1 2 -5
+2 0 2
 */
