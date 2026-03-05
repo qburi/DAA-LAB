@@ -9,7 +9,7 @@ public:
         int n = jobs.size();
         sort(jobs.begin(), jobs.end(), [&](const vector<int>& a, const vector<int>& b) 
         {
-            return a[1] < b[1];
+            return a[1] < b[1]; // ascending order sort based on deadline
         });
 
         vector<int> suffix(n, 0);
