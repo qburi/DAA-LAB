@@ -1,53 +1,56 @@
 #include <bits/stdc++.h>
 
+
 using namespace std;
 
 
-/**
- * Calculates the minimum time to pass through the assembly lines.
- *
- * @param a 2D array where a[0] is Line 1 processing times, a[1] is Line 2.
- * @param t 2D array where t[0] is transfer FROM Line 1, t[1] is transfer FROM Line 2.
- * @param e Entry times for Line 1 and Line 2.
- * @param x Exit times for Line 1 and Line 2.
- * @return The minimum total time.
- */
-int assemblyLineScheduling(vector<vector<int>>& a, vector<vector<int>>& t, int entry1, int entry2, int exit1, int exit2) {
-    const int n = a[0].size(); // the number of stations
-    vector<int> f1(n, 0);
-    vector<int> f2(n, 0);
+class Solution {
+public:
+    void als(vector<int>& a1, vector<int>& a2, vector<int>& t1, vector<int>& t2, int e1, int e2, int x1, int x2) {
+        int n = a2.size();
+        vector<int> f1(n, 0);
+        vector<int> f2(n, 0);
 
-    f1[0] = a[0][0] + entry1;
-    f2[0] = a[1][0] + entry2;
+        f1[0] = e1 + a1[0];
+        f2[0] = e2 + a2[0];
 
-    // already processed station 1
-    for (int j = 1; j < n; j++) {
-        f1[j] = min(f1[j - 1] + a[0][j], f2[j - 1] + t[1][j - 1] + a[0][j]);
-        f2[j] = min(f2[j - 1] + a[1][j], f1[j - 1] + t[0][j - 1] + a[1][j]);
+        for (int i = 1; i < n; i++) {
+            f1[i] = min(f1[i - 1] + a1[i], f2[i - 1] + t2[i - 1] + a1[i]);
+            f2[i] = min(f2[i - 1] + a2[i], f1[i - 1] + t1[i - 1] + a2[i]);
+        }
+
+
+        cout << min(f1[n - 1] + x1, f2[n - 1] + x2) << endl;
     }
-
-    return min(f1[n - 1] + exit1, f2[n - 1] + exit2);
-}
+};
 
 
 int main() {
-    vector<vector<int>> a = {
-        {2, 8, 9, 3, 6, 1},
-        {4, 3, 2, 1, 7, 3}
-    };
+    Solution solution;
+    int n;
+    cin >> n;
+    int e1, e2;
+    cin >> e1 >> e2;
+    int x1, x2;
+    cin >> x1 >> x2;
+    vector<int> a1(n, 0);
+    vector<int> a2(n, 0);
+    for (int i = 0; i < n; i++) {
+        cin >> a1[i];
+    }
+    for (int i = 0; i < n; i++) {
+        cin >> a2[i];
+    }
 
-    // FIX: Updated Row 0 to match Slide Page 18 (2, 3, 1, 3, 4)
-    vector<vector<int>> t = {
-        {2, 3, 1, 3, 4}, // Transfer FROM Line 1 TO Line 2
-        {2, 1, 2, 2, 1}  // Transfer FROM Line 2 TO Line 1
-    };
+    vector<int> t1(n - 1, 0);
+    vector<int> t2(n - 1, 0);
+    for (int i = 0; i < n - 1; i++) {
+        cin >> t1[i];
+    }
 
-    vector<int> e = {4, 2};
-    vector<int> x = {1, 2};
-
-    // FIX: Corrected indices for exit array (x[0], x[1])
-    cout << "Minimum time: "
-            << assemblyLineScheduling(a, t, e[0], e[1], x[0], x[1]) << endl;
-
+    for (int i = 0; i < n - 1; i++) {
+        cin >> t2[i];
+    }
+    solution.als(a1, a2, t1, t2, e1, e2, x1, x2);
     return 0;
 }
