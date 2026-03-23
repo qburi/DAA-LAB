@@ -72,3 +72,10 @@ int main() {
     solution.solution(jobs);
     return 0;
 }
+
+// this code doesn't work for
+/*
+2
+10 10 5
+20 3 4
+*/
