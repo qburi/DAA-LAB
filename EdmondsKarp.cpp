@@ -10,123 +10,124 @@ struct Edge {
 
     Edge(int to, int capacity) {
         flow = 0;
-        this->to = to;
         this->capacity = capacity;
+        this->to = to;
         residualEdge = nullptr;
     }
 
-    int remainingCapacity() {
+    int cf() {
+        // residual capacity
         return capacity - flow;
     }
 
-    void augment(int bottleNeck) {
-        flow += bottleNeck;
-        residualEdge->flow -= bottleNeck;
+    void augment(int bottleneck) {
+        residualEdge->flow -= bottleneck;
+        flow += bottleneck;
     }
 
-    static void addEdge(vector<vector<Edge*>>& adj, int from, int to, int capacity) {
-        // from -> to : forward edge
-        // to -> from : backward edge
-        Edge* forward = new Edge(to, capacity);
-        Edge* backward = new Edge(from, 0);
-
-        forward->residualEdge = backward;
-        backward->residualEdge = forward;
-
-        adj[from].push_back(forward);
-        adj[to].push_back(backward);
-    }
 };
 
 class Solution {
 public:
-    int bfs(int V, int source, int sink, vector<vector<Edge*>>& adj) {
-        vector<bool> visited(V, false);
-        // We need this to trace the path backwards from sink to source
-        vector<Edge*> parentEdge(V, nullptr);
-        queue<int> q;
+    void edmondsKarp(int v, int src, int sink, vector<vector<Edge*>>& adj)  {
+        for (int i = 0; i < v; i++) {
+            sort(adj[i].begin(), adj[i].end(), [](Edge* a, Edge* b) {
+                return a->to < b->to;
+            });
+        }
 
-        q.push(source);
-        visited[source] = true;
 
-        // Standard BFS loop
-        while (!q.empty()) {
-            int curr = q.front();
-            q.pop();
+        int maxFlow = 0;
+        vector<Edge*> edgeTo(v, nullptr);
 
-            if (curr == sink) break; // Reached the sink, stop searching
+        while (true) {
+            int flow = bfs(v, src, sink, adj, edgeTo);
 
-            for (Edge* edge : adj[curr]) {
-                if (!visited[edge->to] && edge->remainingCapacity() > 0) {
-                    visited[edge->to] = true;
-                    parentEdge[edge->to] = edge; // Leave a breadcrumb
-                    q.push(edge->to);
+            if (flow == 0) {
+                break;
+            }
+
+            maxFlow += flow;
+
+            vector<int> path;
+            int currentNode = sink;
+
+            while (currentNode != src) {
+                path.push_back(currentNode);
+                Edge* edge = edgeTo[currentNode];
+                currentNode = edge->residualEdge->to; // we use residual edge because we want to backtrack
+            }
+            path.push_back(src);
+            reverse(path.begin(), path.end());
+
+            cout << "Path: " << path[0];
+            for (int i = 1; i < path.size(); i++) {
+                cout << " -> " << path[i];
+            }
+            cout << ", Flow: " << flow << "\n\n";
+
+
+            // augmentation
+            currentNode = sink;
+            while (currentNode != src) {
+                Edge* edge = edgeTo[currentNode];
+                edge->augment(flow);
+                currentNode = edge->residualEdge->to;
+            }
+        }
+
+        cout << "Total Maximum Flow: " << maxFlow << endl;
+    }
+
+    int bfs(int v, int src, int sink, vector<vector<Edge*>>& adj, vector<Edge*>& edgeTo) {
+        // returns bottleneck value
+        // prints the augmenting path as well
+        fill(edgeTo.begin(), edgeTo.end(), nullptr);
+
+        queue<pair<int, int>> q; // { currentNode, currentBOttleneck }
+        q.push({src, INT_MAX});
+
+        while (! q.empty()) {
+            int qSize = q.size();
+            for (int i = 0; i < qSize; i++) {
+                auto [currentNode, currentBottleneck] = q.front(); q.pop();
+
+                if (currentNode == sink) {
+                    return currentBottleneck;
+                }
+
+                for (Edge* edge: adj[currentNode]) {
+                    int to = edge->to;
+
+                    if (edge->cf() > 0 && edgeTo[to] == nullptr && to != src) {
+                        edgeTo[to] = edge;
+                        q.push({to, min(currentBottleneck, edge->cf())});
+                    }
                 }
             }
         }
 
-        // If we never reached the sink, no augmenting path exists
-        if (parentEdge[sink] == nullptr)
-            return 0;
-
-        // Step 1: Trace back to find the bottleneck capacity
-        int bottleNeck = INT_MAX;
-        int curr = sink;
-        while (curr != source) {
-            Edge* edge = parentEdge[curr];
-            bottleNeck = min(bottleNeck, edge->remainingCapacity());
-            // Move backward: the 'from' node of this edge is the 'to' node of its residual
-            curr = edge->residualEdge->to;
-        }
-
-        // Step 2: Trace back again to actually augment the flow
-        curr = sink;
-        while (curr != source) {
-            Edge* edge = parentEdge[curr];
-            edge->augment(bottleNeck); // This updates forward AND residual!
-            curr = edge->residualEdge->to;
-        }
-
-        return bottleNeck;
-    }
-
-    int edmondsKarp(int V, int source, int sink, vector<vector<Edge*>>& adj) {
-        int maxFlow = 0;
-
-        while (true) {
-            // BFS handles visited internally now, so just call it
-            int flow = bfs(V, source, sink, adj);
-
-            if (flow == 0)
-                break; // no more augmenting paths
-
-            maxFlow += flow;
-        }
-
-        return maxFlow;
+        return 0; // no augmenting paths could be found
     }
 };
 
+
 int main() {
-    // Time complexity: O(V * E^2)
-    // Space complexity: O(V + E)
-    int V = 6;
-    vector<vector<Edge*>> adj(V);
-
-    Edge::addEdge(adj, 0, 1, 16);
-    Edge::addEdge(adj, 0, 2, 13);
-    Edge::addEdge(adj, 1, 2, 10);
-    Edge::addEdge(adj, 1, 3, 12);
-    Edge::addEdge(adj, 2, 1, 4);
-    Edge::addEdge(adj, 2, 4, 14);
-    Edge::addEdge(adj, 3, 2, 9);
-    Edge::addEdge(adj, 3, 5, 20);
-    Edge::addEdge(adj, 4, 3, 7);
-    Edge::addEdge(adj, 4, 5, 4);
-
+    int v, m;
+    cin >> v >> m;
+    int src = 0;
+    int sink = v - 1;
+    vector<vector<Edge*>> adj(v, vector<Edge*>(0, nullptr));
+    for (int i = 0; i < m; i++) {
+        int u;
+        int v;
+        int c;
+        cin >> u >> v >> c;
+        Edge* edge = new Edge(v, c);
+        edge->residualEdge = new Edge(u, 0);
+        adj[u].push_back(edge);
+    }
     Solution solution;
-
-    cout << "Maximum Flow (Edmonds-Karp): " << solution.edmondsKarp(V, 0, 5, adj) << endl;
-
+    solution.edmondsKarp(v, src, sink, adj);
     return 0;
 }
