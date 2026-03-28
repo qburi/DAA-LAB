@@ -6,7 +6,7 @@ class Solution {
 public:
     int matrixChainMultiplication(vector<int>& arr) {
         int n = arr.size();
-        vector<vector<int>> dp(n + 1, vector<int>(n + 1, INT_MAX));
+        vector<vector<int>> dp(n, vector<int>(n, INT_MAX));
         for (int i = 1; i < n; i++)
             dp[i][i] = 0; // base case
         for (int i = n - 1; i >= 1; i--) {
