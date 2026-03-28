@@ -13,10 +13,6 @@ public:
         int rightSum = maxSubarraySum(arr, middle + 1, high);
         int crossSum = maxCrossSum(arr, low, high, middle);
 
-        if (low == 0 && high == arr.size() - 1) {
-            cout << max({leftSum, rightSum, crossSum}) << endl;
-            cout << crossSum;
-        }
 
         return max({leftSum, rightSum, crossSum});
     }
@@ -37,7 +33,6 @@ public:
             sum += arr[i];
             if (sum > rightSum)
                 rightSum = sum;
-
         }
 
         return leftSum + rightSum;
@@ -54,6 +49,9 @@ int main() {
         cin >> arr[i];
 
     Solution solution;
-    solution.maxSubarraySum(arr, 0, arr.size() - 1);
+    int ans = solution.maxSubarraySum(arr, 0, arr.size() - 1);
+    int rootMiddle = (0 + n - 1) / 2;
+    cout << ans << endl;
+    cout << solution.maxCrossSum(arr, 0, n - 1, rootMiddle);
     return 0;
 }
