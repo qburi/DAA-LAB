@@ -2,19 +2,17 @@
 
 using namespace std;
 
-
 class Solution {
 public:
-
-    void printSolution(string s, string p) {
-        int n = s.length();
-        int m = p.length();
+    void solution(string& text, string& pattern) {
+        int m = pattern.length();
+        int n = text.length();
         int i = 1;
-        vector<int> lps(m, 0);
         int len = 0;
+        vector<int> lps(m, 0);
 
         while (i < m) {
-            if (p[i] == p[len]) {
+            if (pattern[i] == pattern[len]) {
                 len++;
                 lps[i] = len;
                 i++;
@@ -29,23 +27,25 @@ public:
             }
         }
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < m - 1; i++)
             cout << lps[i] << " ";
-        }
-        cout << endl;
+        cout << lps[m - 1] << endl;
 
-        i = 0;
         int j = 0;
+        i = 0;
+
         while (i < n) {
-            if (s[i] == p[j]) {
+            if (text[i] == pattern[j]) {
                 i++;
                 j++;
             }
+
             if (j == m) {
-                cout << "Pattern found at index " << i - m << endl;
+                cout << "Pattern found at index " << (i - m) << endl;
+                cout << "Shift: j=" << j << " -> " << lps[j - 1] << endl;
                 j = lps[j - 1];
             }
-            else if (i < n && s[i] != p[j]) {
+            else if (i < n && text[i] != pattern[j]) {
                 if (j != 0) {
                     cout << "Shift: j=" << j << " -> " << lps[j - 1] << endl;
                     j = lps[j - 1];
@@ -55,15 +55,15 @@ public:
                 }
             }
         }
+
     }
 };
 
 int main() {
-    string s;
-    string p;
-    cin >> s;
-    cin >> p;
+    string text;
+    string pattern;
+    cin >> text >> pattern;
     Solution solution;
-    solution.printSolution(s, p);
+    solution.solution(text, pattern);
     return 0;
 }
