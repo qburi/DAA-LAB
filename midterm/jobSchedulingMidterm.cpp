@@ -17,7 +17,7 @@ public:
         for (int i = n - 2; i >= 0; i--) {
             suffix[i] = suffix[i + 1] + jobs[i][0];
             ug += jobs[i][0];
-        };
+        }
         
         queue<vector<int>> q;
         q.push({-1, 0, 0}); // prevIndex, incurredPenalty, executionTime
