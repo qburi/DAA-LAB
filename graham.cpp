@@ -28,11 +28,6 @@ public:
     void solution(vector<pair<int, int>>& points) {
         int n = points.size();
 
-        if (n <= 1) {
-            if (n == 1)
-                cout << "(" << points[0].first << ", " << points[0].second << ")";
-            return;
-        }
 
         int minIndex = 0;
         for (int i = 1; i < n; i++) {
