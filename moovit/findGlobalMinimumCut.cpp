@@ -1,16 +1,14 @@
 #include <bits/stdc++.h>
 
+
 using namespace std;
 
-// Translated from your custom Union-Find logic
-int findSet(int p, vector<int>& id) {
+int find(int p, vector<int>& id) {
     int root = p;
-    // Find the root
     while (root != id[root]) {
         root = id[root];
     }
 
-    // Path compression (Two-pass approach just like your Java code)
     while (p != root) {
         int next = id[p];
         id[p] = root;
@@ -20,70 +18,56 @@ int findSet(int p, vector<int>& id) {
     return root;
 }
 
-bool unionSets(int p, int q, vector<int>& id, int& numberOfConnectedComponents) {
-    int root1 = findSet(p, id);
-    int root2 = findSet(q, id);
+bool unify(int p, int q, vector<int>& id, int& numberOfConnectedComponents) {
+    int rootP = find(p, id);
+    int rootQ = find(q, id);
 
-    if (root1 == root2) return false;
+    if (rootP == rootQ)
+        return false; // already part of the same component
 
-    // Union by setting root1's parent to root2
-    id[root1] = root2;
+    id[rootQ] = rootP;
     numberOfConnectedComponents--;
     return true;
 }
 
 int main() {
-    // Fast I/O
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
+    int v, e;
 
-    int V, E;
-    if (!(cin >> V >> E)) return 0;
-
-    vector<pair<int, int>> edges(E);
-    for (int i = 0; i < E; i++) {
+    cin >> v >> e;
+    vector<pair<int, int>> edges(e);
+    for (int i = 0; i < e; i++) {
         cin >> edges[i].first >> edges[i].second;
     }
 
-    // Seed the random number generator as per assignment instructions
     srand(time(NULL));
 
-    int globalMinCut = E; // The max possible cut is all edges
-    int iterations = 500; // Requirement: at least 500 times
-
-    // Array to hold indices of edges for efficient random selection
-    vector<int> edgeIndices(E);
+    int globalMinCut = e;
+    int iterations = 500;
+    vector<int> edgeIndices(e);
     iota(edgeIndices.begin(), edgeIndices.end(), 0);
 
     for (int i = 0; i < iterations; i++) {
-        vector<int> id(V);
-        for (int v = 0; v < V; v++) {
-            id[v] = v;
-        }
+        vector<int> id(v);
+        for (int i = 0; i < v; i++)
+            id[i] = i;
 
-        int numberOfConnectedComponents = V;
-
-        // Shuffle edge indices to simulate picking a random edge
-        // without getting stuck picking already contracted edges.
+        int numberOfConnectedComponents = v;
         random_shuffle(edgeIndices.begin(), edgeIndices.end());
 
-        // Contract edges until only 2 vertices (components) remain
-        for (int idx : edgeIndices) {
+        for (int idx: edgeIndices) {
             if (numberOfConnectedComponents <= 2) break;
 
             int u = edges[idx].first;
             int v = edges[idx].second;
 
-            // Your union logic
-            unionSets(u, v, id, numberOfConnectedComponents);
+            unify(u, v, id, numberOfConnectedComponents);
         }
 
-        // Count the crossing edges between the 2 remaining super-vertices
         int currentCut = 0;
-        for (int j = 0; j < E; j++) {
-            int root1 = findSet(edges[j].first, id);
-            int root2 = findSet(edges[j].second, id);
-            if (root1 != root2) {
+        for (int j = 0; j < e; j++) {
+            int rootP = find(edges[j].first, id);
+            int rootQ = find(edges[j].second, id);
+            if (rootP != rootQ) {
                 currentCut++;
             }
         }
@@ -93,8 +77,6 @@ int main() {
         }
     }
 
-    // Output format strictly requires ONLY the integer
     cout << globalMinCut << "\n";
-
     return 0;
 }
