@@ -81,7 +81,6 @@ public:
 
     int bfs(int v, int src, int sink, vector<vector<Edge*>>& adj, vector<Edge*>& edgeTo) {
         // returns bottleneck value
-        // prints the augmenting path as well
         fill(edgeTo.begin(), edgeTo.end(), nullptr);
 
         queue<pair<int, int>> q; // { currentNode, currentBOttleneck }
