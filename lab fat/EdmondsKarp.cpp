@@ -123,13 +123,13 @@ int main() {
         int c;
         cin >> u >> v >> c;
         Edge* forwardEdge = new Edge(v, c);
-        Edge* backwardEdge = new Edge(u, 0); // Residual capacity is initially 0
+        Edge* backwardEdge = new Edge(u, 0);
 
         forwardEdge->residualEdge = backwardEdge;
-        backwardEdge->residualEdge = forwardEdge; // Cross-link so backward can undo forward!
+        backwardEdge->residualEdge = forwardEdge;
 
         adj[u].push_back(forwardEdge);
-        adj[v].push_back(backwardEdge); // <--- CRUCIAL
+        adj[v].push_back(backwardEdge);
     }
     Solution solution;
     solution.edmondsKarp(v, src, sink, adj);
